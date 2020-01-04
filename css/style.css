@@ -35,6 +35,18 @@ a {
 }
 
 /* ================================= 
+ Centering for added HTML elements 
+==================================== */
+
+.colors-js-puns {
+	display: flex;
+}
+
+#theme-instructions {
+	margin-top: auto;
+}
+
+/* ================================= 
   Form Element Styles
 ==================================== */
 
