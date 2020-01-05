@@ -1,8 +1,12 @@
-//set focus to first input box on page
+/*---------------------------------------------------
+Initial page focus and toggle input for "other" option
+---------------------------------------------------*/
 $("#name").focus();
-//hide other input field
+
+//hide "other" input field
 $("#other-title").hide();
-//if other is selected for title
+
+//"other" input field toggle
 $("#title").on("change", function() {
   const $inputValue = $(this).val();
   //show other input field
@@ -12,13 +16,18 @@ $("#title").on("change", function() {
     $("#other-title").fadeOut(1000);
   }
 });
-//hide color select menu
+
+/*---------------------------------------------------
+Color option animation and validation block
+---------------------------------------------------*/
 $("#color").hide();
-//place text instructing to select theme
+
+//instruction text
 const $themeInsturctions =
   '<h4 id="theme-instructions">Please select a T-shirt theme.</h4>';
 $("#colors-js-puns").append($themeInsturctions);
-//color menu transition
+
+//animation
 $("#design").on("change", function() {
   const $userSelection = $(this).val();
   if ($userSelection === "js puns" || $userSelection === "heart js") {
@@ -32,5 +41,14 @@ $("#design").on("change", function() {
       .delay(700)
       .fadeIn();
   }
-});
 
+  //validate colors to proper theme
+  if ($userSelection === "heart js") {
+    $("#color option").hide();
+    $("#color option:not(:contains('Pun'))").show();
+  }
+  if ($userSelection === "js puns") {
+    $("#color option").hide();
+    $("#color option:contains('Pun')").show();
+  }
+});
