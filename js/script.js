@@ -19,7 +19,7 @@ $("#title").on("change", function() {
 });
 
 /*---------------------------------------------------
-Color option animation and validation block
+T-shirt Section
 ---------------------------------------------------*/
 
 $("#color").hide();
@@ -60,31 +60,54 @@ $("#design").on("change", function() {
 });
 
 /*---------------------------------------------------
-Activities block
+Activity Section
 ---------------------------------------------------*/
 
-//new elements, global variables
+//create element to display total activity cost & global variables
 const totalElement = '<p id="total"><p>';
-$('.activities').append(totalElement);
-$('#total').hide();
+$(".activities").append(totalElement);
+$("#total").hide();
 let activitiesTotal = 0;
 
-//input listener with calculator of total price
-$('.activities').on('change', 'input', function () {
-  const $inputRef = $(this).is(':checked');
-  console.log($inputRef);
-  const $activityCost = parseInt($(this).attr('data-cost'));
-  console.log($activityCost);
+//listen for changes in activity section & variables needed for the enitre scope
+$(".activities").on("change", "input", function() {
+  const $inputRef = $(this).is(":checked");
+  const $activityCost = parseInt($(this).attr("data-cost"));
+  const $timeStamp = $(this).attr("data-day-and-time");
 
-  if ($inputRef){
+  //updating and displaing total activiy cost
+  if ($inputRef) {
     activitiesTotal += $activityCost;
     if (activitiesTotal > 0) {
-      $('#total').text('Total: $' + activitiesTotal).slideDown();
+      $("#total")
+        .text("Total: $" + activitiesTotal)
+        .slideDown();
     }
   } else {
     activitiesTotal -= $activityCost;
     if (activitiesTotal === 0) {
-    $('#total').text('Total: $' + activitiesTotal).slideUp();
+      $("#total").slideUp();
+    } else {
+      $("#total").text("Total: $" + activitiesTotal);
     }
   }
+
+  //Disabling conflicting activities
+  $(".activities label input").each(function() {
+    const activityTimeStamp = this;
+
+    if (
+      $(activityTimeStamp).attr("data-day-and-time") === $timeStamp &&
+      $(activityTimeStamp).attr("name") !== $inputRef
+    ) {
+      if ($inputRef) {
+        $(this)
+          .not(":checked")
+          .attr("disabled", "");
+      } else {
+        $(this).attr("disabled", false);
+      }
+    }
+  });
+
 });
