@@ -109,5 +109,34 @@ $(".activities").on("change", "input", function() {
       }
     }
   });
+});
 
+/*---------------------------------------------------
+Payment Section
+---------------------------------------------------*/
+
+//initial setup for default payment (credit card)
+$('#payment option[value="select method"]')
+  .hide()
+  .removeAttr("selected");
+$('#payment option[value="credit card"]').attr("selected", "");
+$("#paypal").hide();
+$("#bitcoin").hide();
+
+//provide correct payment option based on user selection
+$("#payment").on("change", function() {
+  const $paymentMethod = $(this).val();
+  if ($paymentMethod === "credit card") {
+    $("#credit-card").slideDown();
+    $("#paypal").hide();
+    $("#bitcoin").hide();
+  } else if ($paymentMethod === "paypal") {
+    $("#paypal").fadeIn();
+    $("#credit-card").hide();
+    $("#bitcoin").hide();
+  } else {
+    $("#bitcoin").fadeIn();
+    $("#paypal").hide();
+    $("#credit-card").hide();
+  }
 });
