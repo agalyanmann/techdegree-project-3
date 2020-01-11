@@ -35,7 +35,7 @@ a {
 }
 
 /* ================================= 
- Centering for added HTML elements 
+jQuery added elements 
 ==================================== */
 
 .colors-js-puns {
@@ -44,6 +44,32 @@ a {
 
 #theme-instructions {
 	margin-top: auto;
+}
+
+.errorSpan {
+  font-size: 1em;
+  text-align: center;
+  position: absolute;
+  background: #2F558E;
+  padding: 7px 10px;
+  color: #fff;
+  border-radius: 5px;
+  left: 67.25%;
+}
+
+.errorSpan:after {
+  right: 100%;
+  top: 50%;
+  border: solid transparent;
+  content: " ";
+  height: 0;
+  width: 0;
+  position: absolute;
+  pointer-events: none;
+  border-color: rgba(136, 183, 213, 0);
+  border-right-color: #2F558E;
+  border-width: 8px;
+  margin-top: -8px;
 }
 
 /* ================================= 

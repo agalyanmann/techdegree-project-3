@@ -140,3 +140,67 @@ $("#payment").on("change", function() {
     $("#credit-card").hide();
   }
 });
+
+/*---------------------------------------------------
+Form Validation
+---------------------------------------------------*/
+
+function isValidName(name) {
+  return /^[a-z]{2,} [a-z]{2,}$/i.test(name);
+}
+
+function isValidEmail(email) {
+  return /[^@]+@[^@.]+\.[a-z]+/i.test(email);
+}
+
+function isValidActivity() {
+  return $(".activities label input").is(":checked");
+}
+
+function isValidCreditCardNumber(cardNumber) {
+  return /^\d{13,16}$/.test(cardNumber);
+}
+
+function isValidZipCode(zipCode) {
+  return /^\d{5}$/.test(zipCode);
+}
+
+function isValidCVV(CVV) {
+  return /^\d{3}$/.test(CVV);
+}
+
+
+function isValidForm() {
+  const userName = $("#name").val();
+  const userEmail = $("#mail").val();
+  const userCardNumber = $("#cc-num").val();
+  const userZip = $("#zip").val();
+  const userCVV = $("#cvv").val();
+
+  if ($("#payment").val() === "credit card") {
+    if (
+      isValidName(userName) &&
+      isValidActivity() &&
+      isValidEmail(userEmail) &&
+      isValidCreditCardNumber(userCardNumber) &&
+      isValidZipCode(userZip) &&
+      isValidCVV(userCVV)
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  } else {
+    if (isValidName(userName) && isValidActivity() && isValidEmail(userEmail)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+}
+
+$("form").on("submit", function() {
+  if (!isValidForm()) {
+    event.preventDefault();
+  }
+});
