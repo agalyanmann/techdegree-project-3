@@ -123,7 +123,7 @@ $('#payment option[value="credit card"]').attr("selected", "");
 $("#paypal").hide();
 $("#bitcoin").hide();
 
-//provide correct payment option based on user selection
+//provide correct payment message based on user selection
 $("#payment").on("change", function() {
   const $paymentMethod = $(this).val();
   if ($paymentMethod === "credit card") {
@@ -145,6 +145,7 @@ $("#payment").on("change", function() {
 Form Validation
 ---------------------------------------------------*/
 
+//regex functions
 function isValidName(name) {
   return /^[a-z]{2,} [a-z]{2,}$/i.test(name);
 }
@@ -169,22 +170,33 @@ function isValidCVV(CVV) {
   return /^\d{3}$/.test(CVV);
 }
 
-
-function isValidForm() {
-  const userName = $("#name").val();
-  const userEmail = $("#mail").val();
+//bundle credit card regex
+function ccValidator() {
   const userCardNumber = $("#cc-num").val();
   const userZip = $("#zip").val();
   const userCVV = $("#cvv").val();
+  if (
+    isValidCreditCardNumber(userCardNumber) &&
+    isValidZipCode(userZip) &&
+    isValidCVV(userCVV)
+  ) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+//function to validate entire form
+function isValidForm() {
+  const userName = $("#name").val();
+  const userEmail = $("#mail").val();
 
   if ($("#payment").val() === "credit card") {
     if (
       isValidName(userName) &&
       isValidActivity() &&
       isValidEmail(userEmail) &&
-      isValidCreditCardNumber(userCardNumber) &&
-      isValidZipCode(userZip) &&
-      isValidCVV(userCVV)
+      ccValidator()
     ) {
       return true;
     } else {
@@ -199,8 +211,55 @@ function isValidForm() {
   }
 }
 
+//event listener to prevent incomplete form submission 
 $("form").on("submit", function() {
   if (!isValidForm()) {
     event.preventDefault();
+  }
+});
+
+/*---------------------------------------------------
+Real Time Form Validation
+---------------------------------------------------*/
+
+//validation message elements
+const nameSpan = `<span id='nameSpan' class='errorSpan'>Please provide your first and last name.</span>`;
+$("#name").after(nameSpan);
+const mailSpan = `<span id='mailSpan' class='errorSpan'>Please provide a valid email.</span>`;
+$("#mail").after(mailSpan);
+const activitySpan = `<span id='activitySpan' class='errorSpan'>Please select the activities you would like to attend.</span>`;
+$(".activities").prepend(activitySpan);
+const paymentSpan = `<span id='paymentSpan' class='errorSpan'>Please provide your payment information.</span>`;
+$("#payment").after(paymentSpan);
+
+//toggle realtime messages
+$("form").on("input", function() {
+  const userName = $("#name").val();
+  const validName = isValidName(userName);
+  const userEmail = $("#mail").val();
+  const validEmail = isValidEmail(userEmail);
+
+  if (validName) {
+    $("#nameSpan").fadeOut();
+  } else {
+    $("#nameSpan").fadeIn();
+  }
+
+  if (validEmail) {
+    $("#mailSpan").fadeOut();
+  } else {
+    $("#mailSpan").fadeIn();
+  }
+
+  if (isValidActivity()) {
+    $("#activitySpan").fadeOut();
+  } else {
+    $("#activitySpan").fadeIn();
+  }
+
+  if (ccValidator() || $("#payment").val() !== "credit card") {
+    $("#paymentSpan").fadeOut();
+  } else {
+    $("#paymentSpan").fadeIn();
   }
 });
