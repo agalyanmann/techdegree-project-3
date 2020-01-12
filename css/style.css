@@ -72,6 +72,17 @@ jQuery added elements
   margin-top: -8px;
 }
 
+#ccReqs {
+	display: flex;
+	flex-direction: column;
+}
+
+#ccReqs li {
+	margin-right: auto;
+	margin-bottom: auto;
+}
+
+
 /* ================================= 
   Form Element Styles
 ==================================== */

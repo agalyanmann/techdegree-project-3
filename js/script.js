@@ -64,7 +64,7 @@ Activity Section
 ---------------------------------------------------*/
 
 //create element to display total activity cost & global variables
-const totalElement = '<p id="total"><p>';
+const totalElement = '<p id="total"></p>';
 $(".activities").append(totalElement);
 $("#total").hide();
 let activitiesTotal = 0;
@@ -227,6 +227,22 @@ function isValidForm() {
 $("form").on("submit", function() {
   if (!isValidForm()) {
     event.preventDefault();
+    if ($("#name").val() === "") {
+      $("#nameSpan").fadeIn();
+    }
+    if ($("#mail").val() === "") {
+      $("#mailSpan").fadeIn();
+    }
+    if (!isValidActivity()) {
+      $("#activitySpan").fadeIn();
+    }
+    if (
+      $("#cc-num").val() === "" ||
+      $("#zip").val() === "" ||
+      $("#cvv").val() === ""
+    ) {
+      $("#paymentSpan").fadeIn();
+    }
   }
 });
 
@@ -237,24 +253,33 @@ Real Time Form Validation
 //validation message elements
 const nameSpan = `<span id='nameSpan' class='errorSpan'>Please provide your first and last name.</span>`;
 $("#name").after(nameSpan);
+$("#nameSpan").hide();
 const nameSpanSpecialChar = `<span id='specialCharSpan' class='errorSpan'>Please do not use any special characters.</span>`;
 $("#name").after(nameSpanSpecialChar);
-
+$("#specialCharSpan").hide();
 const mailSpan = `<span id='mailSpan' class='errorSpan'>Please provide a valid email.</span>`;
 $("#mail").after(mailSpan);
+$("#mailSpan").hide();
 const activitySpan = `<span id='activitySpan' class='errorSpan'>Please select the activities you would like to attend.</span>`;
 $(".activities").prepend(activitySpan);
-const paymentSpan = `<span id='paymentSpan' class='errorSpan'>Please provide your payment information.</span>`;
+$("#activitySpan").hide();
+const paymentSpan = `<span id='paymentSpan' class='errorSpan'>Please provide the following payment details:
+    <ul id='ccReqs'>
+      <li id='ccItem'>A Valid 13-16 Digit Card Number</li>
+      <li id='zipItem'>Your 5 Digit Zip Code</li>
+      <li id='cvvItem'>Your 3 Digit CVV Number</li>
+    </ul>
+  </span>`;
 $("#payment").after(paymentSpan);
+$("#paymentSpan").hide();
 
 //toggle realtime messages
-$("form").on("input", function() {
+
+//name field
+$("#name").on("input", function() {
   const userName = $("#name").val();
   const validName = isValidName(userName);
-  const userEmail = $("#mail").val();
-  const validEmail = isValidEmail(userEmail);
   const regexName = noSpecialChar(userName);
-
   if (validName) {
     $("#nameSpan").fadeOut();
     $("#specialCharSpan").fadeOut();
@@ -267,20 +292,70 @@ $("form").on("input", function() {
     $("#nameSpan").fadeIn();
     $("#name").css("border-color", "rgba(8, 63, 87, 0.6)");
   }
+});
 
+//email field
+$("#mail").on("input", function() {
+  const userEmail = $("#mail").val();
+  const validEmail = isValidEmail(userEmail);
   if (validEmail) {
     $("#mailSpan").fadeOut();
   } else {
     $("#mailSpan").fadeIn();
   }
+});
 
+//activites field
+$(".activities").on("input", function() {
   if (isValidActivity()) {
     $("#activitySpan").fadeOut();
   } else {
     $("#activitySpan").fadeIn();
   }
+});
 
-  if (ccValidator() || $("#payment").val() !== "credit card") {
+//credit card payment field
+$("#credit-card").on("input", function() {
+  const userCardNumber = $("#cc-num").val();
+  const userZip = $("#zip").val();
+  const userCVV = $("#cvv").val();
+  const validCard = isValidCreditCardNumber(userCardNumber);
+  const validZip = isValidZipCode(userZip);
+  const validCVV = isValidCVV(userCVV);
+
+  if (validCard) {
+    $("#ccItem").slideUp();
+  } else {
+    $("#ccItem")
+      .delay()
+      .slideDown();
+  }
+
+  if (validZip) {
+    $("#zipItem").slideUp();
+  } else {
+    $("#zipItem")
+      .delay()
+      .slideDown();
+  }
+
+  if (validCVV) {
+    $("#cvvItem").slideUp();
+  } else {
+    $("#cvvItem")
+      .delay()
+      .slideDown();
+  }
+  if (ccValidator()) {
+    $("#paymentSpan").fadeOut();
+  } else {
+    $("#paymentSpan").fadeIn();
+  }
+});
+
+//hide credit card errors if type not selected
+$("#payment").on("input", function() {
+  if ($("#payment").val() !== "credit card") {
     $("#paymentSpan").fadeOut();
   } else {
     $("#paymentSpan").fadeIn();
