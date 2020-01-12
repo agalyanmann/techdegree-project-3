@@ -146,26 +146,38 @@ Form Validation
 ---------------------------------------------------*/
 
 //regex functions
+
+//must be a first and last name with 2 or more characters
 function isValidName(name) {
   return /^[a-z]{2,} [a-z]{2,}$/i.test(name);
 }
 
+//notify the user no special characters allowed in the name
+function noSpecialChar(name) {
+  return /[^\w ]/.test(name);
+}
+
+//must input valid email name@domain.com
 function isValidEmail(email) {
   return /[^@]+@[^@.]+\.[a-z]+/i.test(email);
 }
 
+//must check min. of one activity
 function isValidActivity() {
   return $(".activities label input").is(":checked");
 }
 
+//card number must be between 13-16 digits
 function isValidCreditCardNumber(cardNumber) {
   return /^\d{13,16}$/.test(cardNumber);
 }
 
+//zip code must be 5 digits
 function isValidZipCode(zipCode) {
   return /^\d{5}$/.test(zipCode);
 }
 
+//CVV must be 3 digits
 function isValidCVV(CVV) {
   return /^\d{3}$/.test(CVV);
 }
@@ -211,7 +223,7 @@ function isValidForm() {
   }
 }
 
-//event listener to prevent incomplete form submission 
+//event listener to prevent incomplete form submission
 $("form").on("submit", function() {
   if (!isValidForm()) {
     event.preventDefault();
@@ -225,6 +237,9 @@ Real Time Form Validation
 //validation message elements
 const nameSpan = `<span id='nameSpan' class='errorSpan'>Please provide your first and last name.</span>`;
 $("#name").after(nameSpan);
+const nameSpanSpecialChar = `<span id='specialCharSpan' class='errorSpan'>Please do not use any special characters.</span>`;
+$("#name").after(nameSpanSpecialChar);
+
 const mailSpan = `<span id='mailSpan' class='errorSpan'>Please provide a valid email.</span>`;
 $("#mail").after(mailSpan);
 const activitySpan = `<span id='activitySpan' class='errorSpan'>Please select the activities you would like to attend.</span>`;
@@ -238,11 +253,19 @@ $("form").on("input", function() {
   const validName = isValidName(userName);
   const userEmail = $("#mail").val();
   const validEmail = isValidEmail(userEmail);
+  const regexName = noSpecialChar(userName);
 
   if (validName) {
     $("#nameSpan").fadeOut();
+    $("#specialCharSpan").fadeOut();
+    $("#name").css("border-color", "rgba(8, 63, 87, 0.6)");
+  } else if (regexName) {
+    $("#nameSpan").fadeOut();
+    $("#specialCharSpan").fadeIn();
+    $("#name").css("border-color", "red");
   } else {
     $("#nameSpan").fadeIn();
+    $("#name").css("border-color", "rgba(8, 63, 87, 0.6)");
   }
 
   if (validEmail) {
